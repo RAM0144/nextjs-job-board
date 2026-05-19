@@ -52,8 +52,8 @@ model Job {
 
   salary              String?
 
-  description         String        @db.Text
-  requirements        String        @db.Text
+  description         String        
+  requirements        String        
 
   isActive            Boolean       @default(true)
 
