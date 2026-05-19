@@ -16,13 +16,15 @@ export default function ResetPassword() {
         password: "",
         confirmPassword: ""
     })
+
+    const [token, setToken] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
 
 
     useEffect(() => {
-        setToken(searchParams.get("token"))
+        setToken(searchParams.get("token") || "")
     }, [searchParams])
 
     const handleChange = (e) => {
