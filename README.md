@@ -2,7 +2,7 @@
 
 A full-stack Job Board platform built with Next.js, NextAuth, Prisma, PostgreSQL, and Tailwind CSS.
 
-Users can browse and apply for jobs, while admins can manage job postings and application statuses.
+The platform allows job seekers to browse and apply for jobs while enabling administrators to manage job postings, applications, and hiring workflows.
 
 ---
 
@@ -11,10 +11,11 @@ Users can browse and apply for jobs, while admins can manage job postings and ap
 ## Authentication
 - User Register & Login
 - JWT Authentication
-- Role-based Authorization
+- Role-based Authorization (Admin/User)
 - Email Verification
-- Forgot Password / Reset Password
+- Forgot Password & Reset Password
 - Protected Routes using Middleware
+- Password Hashing with bcrypt
 
 ---
 
@@ -49,6 +50,17 @@ HIRED / REJECTED
 
 ---
 
+## Email Notifications
+
+The platform uses SMTP (Nodemailer) to send automated emails for:
+
+Email Verification
+Password Reset Requests
+Application Submission Confirmation
+Application Status Updates
+
+---
+
 # Tech Stack
 
 ## Frontend
@@ -66,7 +78,11 @@ HIRED / REJECTED
 - bcrypt
 
 ## Email Service
-- Resend
+- Nodemailer (SMTP)
+
+## Database
+- PostgreSQL (Supabase)
+- Prisma ORM
 
 ---
 
@@ -237,13 +253,21 @@ GET /api/user/applications
 # Database Schema
 
 ## User
+- id
 - name
 - email
 - password
 - role
 - emailVerified
+- verifyToken
+- verifyTokenExpiry
+- resetToken
+- resetTokenExpiry
+- createdAt
+- updatedAt
 
 ## Job
+- id
 - title
 - company
 - location
@@ -251,11 +275,18 @@ GET /api/user/applications
 - salary
 - description
 - requirements
+- createdAt
+- updatedAt
 
 ## Application
+- id
 - status
 - coverLetter
 - resumeUrl
+- userId
+- jobId
+- createdAt
+- updatedAt
 
 ---
 
@@ -263,56 +294,56 @@ GET /api/user/applications
 
 ## Clone Repository
 
-```bash
 git clone https://github.com/RAM0144/nextjs-job-board
-```
+
 
 ## Install Dependencies
 
-```bash
 npm install
-```
 
 ## Setup Environment Variables
 
 Create `.env` file:
 
-```env
-DATABASE_URL=your_database_url
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_secret
-RESEND_API_KEY=your_api_key
-```
+- DATABASE_URL=your_supabase_database_url 
+- DIRECT_URL=your_supabase_direct_url 
+
+- NEXTAUTH_URL=your_domain_url 
+- NEXTAUTH_SECRET=your_secret 
+
+- EMAIL_HOST=smtp.gmail.com 
+- EMAIL_PORT=587 
+- EMAIL_USER=your_email@gmail.com 
+- EMAIL_PASS=your_app_password 
+- EMAIL_FROM=your_email@gmail.com
 
 ---
 
 # Prisma Setup
 
-```bash
 npx prisma generate
 npx prisma migrate dev
-```
 
 ---
 
 # Run Development Server
 
-```bash
 npm run dev
-```
 
 ---
 
 # Email Verification
 
-Email verification is implemented using Resend.
-
-During development, auto-verification is enabled to allow testing without domain setup.
+Email functionality is implemented using SMTP (Nodemailer).
 
 Users receive:
-- Verification email after registration
-- Password reset email during forgot password flow
-- Application status update emails
+
+* Verification emails after registration
+* Password reset emails during the forgot password flow
+* Application confirmation emails after applying for a job
+* Application status update emails (Reviewed, Shortlisted, Rejected, Hired)
+
+Emails are sent securely using SMTP credentials configured through environment variables.
 
 ---
 
@@ -325,6 +356,7 @@ Users receive:
 - Role-based access control
 - Secure email verification tokens
 - Secure password reset tokens
+- Server-side authorization checks
 
 ---
 
@@ -332,14 +364,15 @@ Users receive:
 
 - Resume file upload
 - Admin analytics dashboard
-- Saved jobs
+- Saved jobs feature
 - Pagination
 - Real-time notifications
 - Company profiles
 - Interview scheduling
+- Job bookmarking
 
 ---
 
 # Author
 
-Ramkumar — MERN Stack Developer
+Ramkumar — MERN Stack Developer| Next.js Developer

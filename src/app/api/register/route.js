@@ -5,10 +5,10 @@ import crypto from "crypto"
 
 export async function POST(req) {
     try {
-        const body = await req.json()
+        const { name, email, password } = await req.json()
 
         const existingUser = await prisma.user.findUnique({
-            where: { email: body.email }
+            where: { email }
         })
 
         if (existingUser) {
@@ -17,22 +17,22 @@ export async function POST(req) {
             )
         }
 
-        const hashedPassword = await bcrypt.hash(body.password, 10)
+        const hashedPassword = await bcrypt.hash(password, 10)
 
         const token = crypto.randomBytes(32).toString("hex")
 
         const user = await prisma.user.create({
             data: {
-                name: body.name,
-                email: body.email,
+                name,
+                email,
                 password: hashedPassword,
-                emailVerified: true,   // ✅ auto verify — skip email for now
+                // emailVerified: true,   // ✅ auto verify — skip email for now
                 verifyToken: token,
                 verifyTokenExpiry: new Date(Date.now() + 1000 * 60 * 60)
             }
         })
 
-        // await sendVerificationEmail(body.email, token)
+        await sendVerificationEmail(email, name, token)
 
         return Response.json({ message: "User Created Successfully", user })
 

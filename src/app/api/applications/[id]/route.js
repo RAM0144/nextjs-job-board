@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../auth/[...nextauth]/route"
 import { prisma } from "@/lib/prisma"
-// import { sendStatusUpdate } from "@/lib/mail"
+import { sendStatusUpdate } from "@/lib/mail"
 
 // Update the applications status(ADMIN)
 export async function PUT(req, { params }) {
@@ -39,13 +39,13 @@ export async function PUT(req, { params }) {
         })
 
         // Send status update email to user
-        // await sendStatusUpdate(
-        //     application.user.email,
-        //     application.user.name,
-        //     application.job.title,
-        //     application.job.company,
-        //     status
-        // )
+        await sendStatusUpdate(
+            application.user.email,
+            application.user.name,
+            application.job.title,
+            application.job.company,
+            status
+        )
         return Response.json({ message: "Status updated", application })
 
     } catch (error) {

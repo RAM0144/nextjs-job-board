@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "../auth/[...nextauth]/route"
 import { prisma } from "@/lib/prisma"
-// import { sendApplicationConfirmation } from "@/lib/mail"
+import { sendApplicationConfirmation } from "@/lib/mail"
 
 // POST Apply the job(resume, cover letter) USER
 export async function POST(req) {
@@ -72,16 +72,16 @@ export async function POST(req) {
             }
         })
 
-        // try {
-        //     await sendApplicationConfirmation(
-        //         session.user.email,
-        //         session.user.name,
-        //         job.title,
-        //         job.company
-        //     )
-        // } catch (emailError) {
-        //     console.log("Email failed but application saved:", emailError) 
-        // }
+        try {
+            await sendApplicationConfirmation(
+                session.user.email,
+                session.user.name,
+                job.title,
+                job.company
+            )
+        } catch (emailError) {
+            console.log("Email failed but application saved:", emailError) 
+        }
 
         return Response.json(
             { message: "Application submitted successfully", application },
